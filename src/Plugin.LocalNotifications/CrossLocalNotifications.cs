@@ -9,7 +9,7 @@ namespace Plugin.LocalNotifications
     /// </summary>
     public static class CrossLocalNotifications
     {
-        private static Lazy<ILocalNotifications> _notifier = new Lazy<ILocalNotifications>(CreateNotifier, LazyThreadSafetyMode.PublicationOnly);
+        private static Lazy<ILocalNotifications> _impl = new Lazy<ILocalNotifications>(CreateLocalNotificationsImplementation, LazyThreadSafetyMode.PublicationOnly);
 
         /// <summary>
         /// Gets the current platform specific ILocalNotifications implementation.
@@ -18,14 +18,14 @@ namespace Plugin.LocalNotifications
         {
             get
             {
-                var val = _notifier.Value;
+                var val = _impl.Value;
                 if (val == null)
                     throw NotImplementedInReferenceAssembly();
                 return val;
             }
         }
 
-        private static ILocalNotifications CreateNotifier()
+        private static ILocalNotifications CreateLocalNotificationsImplementation()
         {
 #if PCL
             return null;

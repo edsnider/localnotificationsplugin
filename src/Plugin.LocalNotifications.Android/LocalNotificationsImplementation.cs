@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 namespace Plugin.LocalNotifications
 {
     /// <summary>
-    /// Notifier implementation for Android
+    /// Local Notifications implementation for Android
     /// </summary>
     public class LocalNotificationsImplementation : ILocalNotifications
     {
@@ -17,12 +17,13 @@ namespace Plugin.LocalNotifications
         /// Get or Set Resource Icon to display
         /// </summary>
         public static int NotificationIconId { get; set; }
+
         /// <summary>
-        /// Show a local notification in the Notification Area and Drawer.
+        /// Show a local notification
         /// </summary>
         /// <param name="title">Title of the notification</param>
         /// <param name="body">Body or description of the notification</param>
-        /// <param name="id">Id of notifications</param>
+        /// <param name="id">Id of the notification</param>
         public void Show(string title, string body, int id = 0)
         {
             var builder = new NotificationCompat.Builder(Application.Context);
@@ -58,12 +59,12 @@ namespace Plugin.LocalNotifications
             return Application.Context.PackageManager.GetLaunchIntentForPackage(packageName);
         }
         /// <summary>
-        /// Schedule a local notification in the Notification Area and Drawer.
+        /// Show a local notification at a specified time
         /// </summary>
         /// <param name="title">Title of the notification</param>
         /// <param name="body">Body or description of the notification</param>
         /// <param name="id">Id of the notification</param>
-        /// <param name="notifyTime">The time you would like to schedule the notification for</param>
+        /// <param name="notifyTime">Time to show notification</param>
         public void Show(string title, string body, int id, DateTime notifyTime)
         {
             var intent = CreateIntent(id);
@@ -93,9 +94,9 @@ namespace Plugin.LocalNotifications
         }
 
         /// <summary>
-        /// Show a local toast notification.  Notification will also appear in the Notification Center on Windows Phone 8.1.
+        /// Cancel a local notification
         /// </summary>
-        /// <param name="id">Id of the scheduled notification you'd like to cancel</param>
+        /// <param name="id">Id of the notification to cancel</param>
         public void Cancel(int id)
         {
             var intent = CreateIntent(id);

@@ -7,7 +7,7 @@ using System.Linq;
 namespace Plugin.LocalNotifications
 {
     /// <summary>
-    /// Notifier implementation for Windows
+    /// Local Notifications implementation for UWP, WinRT and Windows Phone Silverlight
     /// </summary>
     public class LocalNotificationsImplementation : ILocalNotifications
     {
@@ -21,11 +21,11 @@ namespace Plugin.LocalNotifications
                                                     + "</toast>";
 
         /// <summary>
-        /// Show a local toast notification.  Notification will also appear in the Notification Center on Windows Phone 8.1.
-        /// </summary>
-        /// <param name="title">Title of the notification</param>
-        /// <param name="body">Body or description of the notification</param>
-        /// <param name="id">Id of notifications</param>
+		/// Show a local notification
+		/// </summary>
+		/// <param name="title">Title of the notification</param>
+		/// <param name="body">Body or description of the notification</param>
+		/// <param name="id">Id of the notification</param>
         public void Show(string title, string body, int id = 0)
         {
             var xmlData = string.Format(_TOAST_TEXT02_TEMPLATE, title, body);
@@ -44,12 +44,12 @@ namespace Plugin.LocalNotifications
         }
 
         /// <summary>
-        /// Schedule a local toast notification.  Notification will also appear in the Notification Center on Windows Phone 8.1.
-        /// </summary>
-        /// <param name="title">Title of the notification</param>
-        /// <param name="body">Body or description of the notification</param>
-        /// <param name="id">Id of the notification</param>
-        /// <param name="notifyTime">Time to show notification</param>
+		/// Show a local notification at a specified time
+		/// </summary>
+		/// <param name="title">Title of the notification</param>
+		/// <param name="body">Body or description of the notification</param>
+		/// <param name="id">Id of the notification</param>
+		/// <param name="notifyTime">Time to show notification</param>
         public void Show(string title, string body, int id, DateTime notifyTime)
         {
             var xmlData = string.Format(_TOAST_TEXT02_TEMPLATE, title, body);
@@ -72,7 +72,7 @@ namespace Plugin.LocalNotifications
         /// <summary>
         /// Cancel a local notification
         /// </summary>
-        /// <param name="id">Id of the scheduled notification you'd like to cancel</param>
+        /// <param name="id">Id of the notification to cancel</param>
         public void Cancel(int id)
         {
             var scheduledNotifications = TileUpdateManager.CreateTileUpdaterForApplication().GetScheduledTileNotifications();
