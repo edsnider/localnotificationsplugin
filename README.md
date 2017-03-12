@@ -1,79 +1,99 @@
-# Local Notifications Plugin (Notifier)
+## Local Notifications Plugin for Xamarin and Windows
 
-[Update] Due to changes in the core operating systems this NuGet and Plugin is no longer supported.
+[![NuGet](https://img.shields.io/nuget/v/Xam.Plugins.Notifier.svg?label=NuGet)](https://www.nuget.org/packages/Xam.Plugins.Notifier/)
 
-Notifier provides a consistent and easy way to show local notifications from within a native mobile app with a single line of code. Notifications are handled and displayed natively for each respective platform OS so they will appear in the notification center on iOS, Android and Windows Phone and will display a toast on Windows and Windows Phone.
+A consistent and easy way to show local notifications in Xamarin and Windows apps.
+
+### Setup
+* Available on NuGet: [https://www.nuget.org/packages/Xam.Plugins.Notifier/](https://www.nuget.org/packages/Xam.Plugins.Notifier/)
+* Install in your PCL project and platform client projects.
 
 **Platform Support**
 
 |Platform|Supported|Version|
 | ------------------- | :-----------: | :------------------: |
 |Xamarin.iOS|Yes|iOS 7+|
-|Xamarin.iOS Unified|Yes|iOS 7+|
 |Xamarin.Android|Yes|API 10+|
-|Windows Phone Silverlight|Yes|8.1+|
-|Windows Phone RT|Yes|8.1+|
-|Windows Store RT|Yes|8.1+|
-|Windows 10 UWP|Yes|10+|
+|Windows Phone (Silverlight)|Yes|8.1+|
+|Windows Phone (WinRT)|Yes|8.1+|
+|Windows Store (WinRT)|Yes|8.1+|
+|Windows (UWP)|Yes|10+|
 |Xamarin.Mac|No||
 
-## Methods
+### API Usage
+
+Call `CrossLocalNotifications.Current` from any project or PCL to gain access to APIs.
+
+#### Display a local notification immediately
 
 ```csharp
-        /// <summary>
-        /// Show a local notification
-        /// </summary>
-        /// <param name="title">Title of the notification</param>
-        /// <param name="body">Body or description of the notification</param>
-        /// <param name="id">Id of the notification</param>
-        void Show(string title, string body, int id = 0);
+CrossLocalNotifications.Current.Show("title", "body");
 ```
 
-Timed Notification
+#### Display a local notification at a scheduled date/time
 
 ```csharp
-        /// <summary>
-        /// Show a local notification at a specified time
-        /// </summary>
-        /// <param name="title">Title of the notification</param>
-        /// <param name="body">Body or description of the notification</param>
-        /// <param name="id">Id of the notification</param>
-        /// <param name="notifyTime">Time to show notification</param>
-        void Show(string title, string body, int id, DateTime notifyTime);
+CrossLocalNotifications.Current.Show("title", "body", 101, DateTime.Now.AddSeconds(5));
 ```
 
-Cancel Notification
+#### Cancel a local notification
+
 ```csharp
-        /// <summary>
-        /// Cancel a local notification
-        /// </summary>
-        /// <param name="id">Id of the scheduled notification you'd like to cancel</param>
-        void Cancel(int id);
+CrossLocalNotifications.Current.Cancel(101);
 ```
 
-Usage:
 
-    Notifier.Current.Show("You've got mail", "You have 793 unread messages!");
+### Platform Specific Notes
 
+Some platforms require certain permissions or settings before it will display notifications.
 
-## Platform Specific Notes
+#### Windows and Windows Phone 8.1
+You must enable notifications in the .appmanifest file by setting the "Toast capable" property to "Yes".
 
-Some platforms require some options to be set before it will display notifications.
+#### iOS 8.0+ 
+You must get permission from the user to allow the app to show local notifications.
 
-### Windows and Windows Phone
-You must enable notifications in the app manifest by setting the "Toast capable" property to "Yes".
+To do so, include the following code in the `FinishedLaunching()` method of `AppDelegate`:
 
-### iOS (as of iOS 8) 
-You must get permission from the user to allow the app to show local notifications.  Details on how to do this are here thanks to [Larry O'Brien](https://twitter.com/lobrien): [http://www.knowing.net/index.php/2014/07/03/local-notifications-in-ios-8-with-xamarin/](http://www.knowing.net/index.php/2014/07/03/local-notifications-in-ios-8-with-xamarin/)
+```csharp
+if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+{
+        // Ask the user for permission to get notifications on iOS 10.0+
+        UNUserNotificationCenter.Current.RequestAuthorization(
+                UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound,
+                (approved, error) => { });
+}
+else if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+{
+        // Ask the user for permission to get notifications on iOS 8.0+
+        var settings = UIUserNotificationSettings.GetSettingsForTypes(
+                UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound,
+                new NSSet());
 
-### Android
+        UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
+}
+```
+
+On iOS 10.0+ in order to specify how notifications are handled when the app is active you must create a delegate class 
+that subclasses `UNUserNotificationCenterDelegate` and assign it to the `UNUserNotificationCenter`.
+
+For more details see the [sample included in this repository](https://github.com/edsnider/LocalNotificationsPlugin/tree/master/samples/LocalNotificationsSample/LocalNotificationsSample.iOS) 
+and check out [Xamarin's iOS 10 UserNotifications framework documentation](https://developer.xamarin.com/guides/ios/platform_features/introduction-to-ios10/user-notifications/).
+
+#### Android
 Currently, if the phone is re-booted then the pending notifications are not sent, you should save them out to settings and re-send on re-boot.
 
-#### Notification Icon on Android
+##### Notification Icon on Android
 You can set the notification Icon by setting the following property from inside your Android project:
 
-```
+```csharp
 LocalNotificationsImplementation.NotificationIconId = Resrouce.Drawable.YOU_ICON_HERE
 ```
 
+### Contributors
 
+* [James Montemagno](https://github.com/jamesmontemagno)
+
+### License
+
+Licensed under MIT see [License file](https://github.com/edsnider/LocalNotificationsPlugin/blob/master/LICENSE)
