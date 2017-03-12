@@ -118,11 +118,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Plugin.LocalNotifications, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xam.Plugins.Notifier.2.0.2\lib\Xamarin.iOS10\Plugin.LocalNotifications.dll</HintPath>
+      <HintPath>..\packages\Xam.Plugins.Notifier.2.1.0\lib\Xamarin.iOS10\Plugin.LocalNotifications.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Plugin.LocalNotifications.Abstractions, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xam.Plugins.Notifier.2.0.2\lib\Xamarin.iOS10\Plugin.LocalNotifications.Abstractions.dll</HintPath>
+      <HintPath>..\packages\Xam.Plugins.Notifier.2.1.0\lib\Xamarin.iOS10\Plugin.LocalNotifications.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
