@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="LocalNotificationsSample.MainPage">
+	<ContentPage.Content>
+		<StackLayout Padding="12" Spacing="20" Margin="0,60,0,0">
+			<Entry x:Name="TitleEntry" Text="Toast title" />
+			<Entry x:Name="BodyEntry" Text="This is the toast body..." />
+			<StackLayout Orientation="Horizontal">
+				<Label Text="Schedule delivery" />
+				<Switch x:Name="ScheduleSwitch" Toggled="ScheduledSwitchToggled" />
+			</StackLayout>
+			<Picker x:Name="ScheduleSecondsPicker" Title="Seconds before delivery" IsVisible="false" SelectedIndexChanged="Handle_SelectedIndexChanged">
+				<Picker.Items>
+					<x:String>5</x:String>
+					<x:String>10</x:String>
+					<x:String>15</x:String>
+				</Picker.Items>
+			</Picker>
+			<Button x:Name="SendButton" Text="Send" Clicked="SendButtonClicked" />
+			<Button x:Name="CancelButton" Text="Cancel" Clicked="CancelButtonClicked" />
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>
