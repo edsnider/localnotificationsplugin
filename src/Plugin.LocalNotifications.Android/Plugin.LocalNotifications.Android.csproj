@@ -16,6 +16,7 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
     <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
+    <AndroidTlsProvider></AndroidTlsProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -63,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Plugin.LocalNotifications.Abstractions\Plugin.LocalNotifications.Abstractions.csproj">
-      <Project>{2906ba0a-cd3e-4ab3-9e8c-7b4da836fa1f}</Project>
+      <Project>{57564CE6-C079-47C5-9272-4395A0224C3D}</Project>
       <Name>Plugin.LocalNotifications.Abstractions</Name>
     </ProjectReference>
   </ItemGroup>

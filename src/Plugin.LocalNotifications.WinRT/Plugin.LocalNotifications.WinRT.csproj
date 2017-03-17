@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Plugin.LocalNotifications.Abstractions\Plugin.LocalNotifications.Abstractions.csproj">
-      <Project>{2906BA0A-CD3E-4AB3-9E8C-7B4DA836FA1F}</Project>
+      <Project>{57564CE6-C079-47C5-9272-4395A0224C3D}</Project>
       <Name>Plugin.LocalNotifications.Abstractions</Name>
     </ProjectReference>
   </ItemGroup>
