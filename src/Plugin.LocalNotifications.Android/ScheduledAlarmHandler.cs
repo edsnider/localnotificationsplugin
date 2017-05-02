@@ -15,16 +15,11 @@ namespace Plugin.LocalNotifications
         /// <summary>
         /// 
         /// </summary>
-        public const string LocalNotificationKey = "LocalNotification";
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="context"></param>
         /// <param name="intent"></param>
         public override void OnReceive(Context context, Intent intent)
         {
-            var extra = intent.GetStringExtra(LocalNotificationKey);
+            var extra = intent.GetStringExtra(LocalNotificationsImplementation.LocalNotificationKey);
             var notification = DeserializeNotification(extra);
 
             var builder = new NotificationCompat.Builder(Application.Context)
@@ -33,25 +28,28 @@ namespace Plugin.LocalNotifications
                 .SetSmallIcon(notification.IconId)
                 .SetAutoCancel(true);
 
-            var resultIntent = LocalNotificationsImplementation.GetLauncherActivity();
-            resultIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
-            var stackBuilder = Android.Support.V4.App.TaskStackBuilder.Create(Application.Context);
-            stackBuilder.AddNextIntent(resultIntent);
-            var resultPendingIntent =
-                stackBuilder.GetPendingIntent(0, (int)PendingIntentFlags.UpdateCurrent);
+            var resultIntent = string.IsNullOrEmpty(LocalNotificationsImplementation.LocalNotificationIntentAction) ?
+                                     LocalNotificationsImplementation.GetLauncherActivity()
+                                     :
+                                     new Intent(LocalNotificationsImplementation.LocalNotificationIntentAction).AddFlags(ActivityFlags.NewTask);
+
+            resultIntent.PutExtra(LocalNotificationsImplementation.LocalNotificationIntentKey, notification.Id);
+
+            var resultPendingIntent = PendingIntent.GetActivity(Application.Context, 0, resultIntent, 0);
             builder.SetContentIntent(resultPendingIntent);
 
             var notificationManager = NotificationManagerCompat.From(Application.Context);
+
             notificationManager.Notify(notification.Id, builder.Build());
         }
 
         private LocalNotification DeserializeNotification(string notificationString)
         {
             var xmlSerializer = new XmlSerializer(typeof(LocalNotification));
+
             using (var stringReader = new StringReader(notificationString))
             {
-                var notification = (LocalNotification)xmlSerializer.Deserialize(stringReader);
-                return notification;
+                return (LocalNotification)xmlSerializer.Deserialize(stringReader);
             }
         }
     }

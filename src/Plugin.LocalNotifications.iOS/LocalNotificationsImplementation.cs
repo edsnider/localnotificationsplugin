@@ -1,7 +1,7 @@
 ﻿using System;
-using Plugin.LocalNotifications.Abstractions;
 using System.Linq;
 using Foundation;
+using Plugin.LocalNotifications.Abstractions;
 using UIKit;
 using UserNotifications;
 
@@ -25,6 +25,7 @@ namespace Plugin.LocalNotifications
             if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
                 var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(.1, false);
+
                 ShowUserNotification(title, body, id, trigger);
             }
             else
@@ -45,6 +46,7 @@ namespace Plugin.LocalNotifications
             if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
                 var trigger = UNCalendarNotificationTrigger.CreateTrigger(GetNSDateComponentsFromDateTime(notifyTime), false);
+
                 ShowUserNotification(title, body, id, trigger);
             }
             else
@@ -75,8 +77,7 @@ namespace Plugin.LocalNotifications
             else
             {
                 var notifications = UIApplication.SharedApplication.ScheduledLocalNotifications;
-                var notification = notifications.Where(n => n.UserInfo.ContainsKey(NSObject.FromObject(NotificationKey)))
-                    .FirstOrDefault(n => n.UserInfo[NotificationKey].Equals(NSObject.FromObject(id)));
+                var notification = notifications.Where(n => n.UserInfo.ContainsKey(NSObject.FromObject(NotificationKey))).FirstOrDefault(n => n.UserInfo[NotificationKey].Equals(NSObject.FromObject(id)));
 
                 if (notification != null)
                 {
@@ -96,9 +97,10 @@ namespace Plugin.LocalNotifications
             var content = new UNMutableNotificationContent()
             {
                 Title = title,
-                Body = body
+                Body = body,
+                UserInfo = NSDictionary.FromObjectAndKey(NSObject.FromObject(id), NSObject.FromObject(NotificationKey))
             };
-            
+
             var request = UNNotificationRequest.FromIdentifier(id.ToString(), content, trigger);
 
             UNUserNotificationCenter.Current.AddNotificationRequest(request, (error) => { });
