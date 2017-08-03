@@ -12,6 +12,11 @@ namespace Plugin.LocalNotifications
         private static Lazy<ILocalNotifications> _impl = new Lazy<ILocalNotifications>(CreateLocalNotificationsImplementation, LazyThreadSafetyMode.PublicationOnly);
 
         /// <summary>
+        /// Get the key to retrieve the custom data attached to notifications.
+        /// </summary>
+        public const string LocalNotificationCustomData = "LocalNotificationCustomData";
+        
+        /// <summary>
         /// Gets the current platform specific ILocalNotifications implementation.
         /// </summary>
         public static ILocalNotifications Current

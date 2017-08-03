@@ -1,5 +1,6 @@
 using Android.App;
 using Android.Content;
+using Android.Media;
 using Android.Support.V4.App;
 using Plugin.LocalNotifications.Abstractions;
 using System;
@@ -18,6 +19,7 @@ namespace Plugin.LocalNotifications
         /// </summary>
         public static int NotificationIconId { get; set; }
 
+
         /// <summary>
         /// Show a local notification
         /// </summary>
@@ -26,10 +28,23 @@ namespace Plugin.LocalNotifications
         /// <param name="id">Id of the notification</param>
         public void Show(string title, string body, int id = 0)
         {
+            Show(title, body, null, id);
+        }
+
+        /// <summary>
+        /// Show a local notification
+        /// </summary>
+        /// <param name="title">Title of the notification</param>
+        /// <param name="body">Body or description of the notification</param>
+        /// <param name="customData">Custom data to attach to notification</param>
+        /// <param name="id">Id of the notification</param>
+        public void Show(string title, string body, string customData, int id = 0)
+        {
             var builder = new NotificationCompat.Builder(Application.Context);
             builder.SetContentTitle(title);
             builder.SetContentText(body);
             builder.SetAutoCancel(true);
+            builder.SetSound(RingtoneManager.GetDefaultUri(RingtoneType.Notification));
 
             if (NotificationIconId != 0)
             {
@@ -42,6 +57,8 @@ namespace Plugin.LocalNotifications
 
             var resultIntent = GetLauncherActivity();
             resultIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+            if (!string.IsNullOrWhiteSpace(customData))
+                resultIntent.PutExtra(CrossLocalNotifications.LocalNotificationCustomData, customData);
             var stackBuilder = Android.Support.V4.App.TaskStackBuilder.Create(Application.Context);
             stackBuilder.AddNextIntent(resultIntent);
             var resultPendingIntent =
@@ -52,12 +69,12 @@ namespace Plugin.LocalNotifications
             notificationManager.Notify(id, builder.Build());
         }
 
-
         public static Intent GetLauncherActivity()
         {
             var packageName = Application.Context.PackageName;
             return Application.Context.PackageManager.GetLaunchIntentForPackage(packageName);
         }
+
         /// <summary>
         /// Show a local notification at a specified time
         /// </summary>
@@ -67,6 +84,19 @@ namespace Plugin.LocalNotifications
         /// <param name="notifyTime">Time to show notification</param>
         public void Show(string title, string body, int id, DateTime notifyTime)
         {
+            Show(title, body, id, notifyTime, null);
+        }
+
+        /// <summary>
+        /// Show a local notification at a specified time
+        /// </summary>
+        /// <param name="title">Title of the notification</param>
+        /// <param name="body">Body or description of the notification</param>
+        /// <param name="id">Id of the notification</param>
+        /// <param name="notifyTime">Time to show notification</param>
+        /// <param name="customData">Custom data attached to notification</param>
+        public void Show(string title, string body, int id, DateTime notifyTime, string customData)
+        {
             var intent = CreateIntent(id);
 
             var localNotification = new LocalNotification();
@@ -74,6 +104,7 @@ namespace Plugin.LocalNotifications
             localNotification.Body = body;
             localNotification.Id = id;
             localNotification.NotifyTime = notifyTime;
+            localNotification.CustomData = customData;
             if (NotificationIconId != 0)
             {
                 localNotification.IconId = NotificationIconId;

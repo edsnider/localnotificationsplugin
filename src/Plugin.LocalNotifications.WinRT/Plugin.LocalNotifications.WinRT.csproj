@@ -49,6 +49,7 @@
     <ProjectReference Include="..\Plugin.LocalNotifications.Abstractions\Plugin.LocalNotifications.Abstractions.csproj">
       <Project>{57564CE6-C079-47C5-9272-4395A0224C3D}</Project>
       <Name>Plugin.LocalNotifications.Abstractions</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

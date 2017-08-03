@@ -9,5 +9,6 @@ namespace Plugin.LocalNotifications
         public int Id { get; set; }
         public int IconId { get; set; }
         public DateTime NotifyTime { get; set; }
+        public string CustomData { get; set; }
     }
 }
