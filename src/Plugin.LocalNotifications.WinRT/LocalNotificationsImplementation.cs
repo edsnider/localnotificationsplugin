@@ -41,7 +41,8 @@ namespace Plugin.LocalNotifications
         /// <param name="id">Id of the notification</param>
         public void Show(string title, string body, string customData, int id = 0)
         {
-            var xmlData = string.Format(_TOAST_TEXT02_TEMPLATE, title, body, customData);
+            var xmlData = string.Format(_TOAST_TEXT02_TEMPLATE, title, body, 
+                $"{CrossLocalNotifications.LocalNotificationCustomData}={customData}");
 
             var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlData);
