@@ -19,7 +19,6 @@ namespace Plugin.LocalNotifications
         /// </summary>
         public static int NotificationIconId { get; set; }
 
-
         /// <summary>
         /// Show a local notification
         /// </summary>
@@ -52,7 +51,10 @@ namespace Plugin.LocalNotifications
             }
             else
             {
-                builder.SetSmallIcon(Resource.Drawable.plugin_lc_smallicon);
+                var context = Application.Context;
+                if(context != null && context?.ApplicationInfo?.Icon != null)
+                    builder.SetSmallIcon(context.ApplicationInfo.Icon);
+                else builder.SetSmallIcon(Resource.Drawable.plugin_lc_smallicon);
             }
 
             var resultIntent = GetLauncherActivity();
