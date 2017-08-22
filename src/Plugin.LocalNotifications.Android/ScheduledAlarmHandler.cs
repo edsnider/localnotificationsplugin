@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 using Android.App;
 using Android.Content;
 using Android.Support.V4.App;
+using Android.Media;
 
 namespace Plugin.LocalNotifications
 {
@@ -31,6 +32,7 @@ namespace Plugin.LocalNotifications
                 .SetContentTitle(notification.Title)
                 .SetContentText(notification.Body)
                 .SetSmallIcon(notification.IconId)
+                .SetSound(RingtoneManager.GetDefaultUri(RingtoneType.Notification))
                 .SetAutoCancel(true);
 
             var resultIntent = LocalNotificationsImplementation.GetLauncherActivity();

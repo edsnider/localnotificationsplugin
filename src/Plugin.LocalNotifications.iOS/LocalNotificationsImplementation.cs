@@ -22,14 +22,26 @@ namespace Plugin.LocalNotifications
         /// <param name="id">Id of the notification</param>
         public void Show(string title, string body, int id = 0)
         {
+            Show(title, body, null, id);
+        }
+
+        /// <summary>
+        /// Show a local notification
+        /// </summary>
+        /// <param name="title">Title of the notification</param>
+        /// <param name="body">Body or description of the notification</param>
+        /// <param name="customData">Custom data to attach to notification</param>
+        /// <param name="id">Id of the notification</param>
+        public void Show(string title, string body, string customData, int id = 0)
+        {
             if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
                 var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(.1, false);
-                ShowUserNotification(title, body, id, trigger);
+                ShowUserNotification(title, body, id, trigger, customData);
             }
             else
             {
-                Show(title, body, id, DateTime.Now);
+                Show(title, body, id, DateTime.Now, customData);
             }
         }
 
@@ -42,19 +54,49 @@ namespace Plugin.LocalNotifications
         /// <param name="notifyTime">Time to show notification</param>
         public void Show(string title, string body, int id, DateTime notifyTime)
         {
+            Show(title, body, id, notifyTime, null);
+        }
+
+        /// <summary>
+        /// Show a local notification at a specified time
+        /// </summary>
+        /// <param name="title">Title of the notification</param>
+        /// <param name="body">Body or description of the notification</param>
+        /// <param name="id">Id of the notification</param>
+        /// <param name="notifyTime">Time to show notification</param>
+        /// <param name="customData">Custom data attached to notification</param>
+        public void Show(string title, string body, int id, DateTime notifyTime, string customData)
+        {
             if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
                 var trigger = UNCalendarNotificationTrigger.CreateTrigger(GetNSDateComponentsFromDateTime(notifyTime), false);
-                ShowUserNotification(title, body, id, trigger);
+                ShowUserNotification(title, body, id, trigger, customData);
             }
             else
             {
+                NSDictionary userInfo;
+                if (!string.IsNullOrWhiteSpace(customData))
+                {
+                    userInfo = NSDictionary.FromObjectsAndKeys(
+                        new NSObject[]
+                        {
+                            NSObject.FromObject(id),
+                            NSObject.FromObject(customData),
+                        },
+                        new NSObject[]
+                        {
+                            NSObject.FromObject(NotificationKey),
+                            NSObject.FromObject(CrossLocalNotifications.LocalNotificationCustomData),
+                        });
+                }
+                else userInfo = NSDictionary.FromObjectAndKey(NSObject.FromObject(id), NSObject.FromObject(NotificationKey));
                 var notification = new UILocalNotification
                 {
                     FireDate = (NSDate)notifyTime,
                     AlertTitle = title,
                     AlertBody = body,
-                    UserInfo = NSDictionary.FromObjectAndKey(NSObject.FromObject(id), NSObject.FromObject(NotificationKey))
+                    UserInfo = userInfo,
+                    SoundName = UILocalNotification.DefaultSoundName
                 };
 
                 UIApplication.SharedApplication.ScheduleLocalNotification(notification);
@@ -85,18 +127,43 @@ namespace Plugin.LocalNotifications
             }
         }
 
-        // Show local notifications using the UNUserNotificationCenter using a notification trigger (iOS 10+ only)
-        void ShowUserNotification(string title, string body, int id, UNNotificationTrigger trigger)
+        /// <summary>
+        /// Show local notifications using the UNUserNotificationCenter using a notification trigger (iOS 10+ only)
+        /// </summary>
+        /// <param name="title">Title of the notification</param>
+        /// <param name="body">Body or description of the notification</param>
+        /// <param name="id">Id of the notificatio</param>
+        /// <param name="trigger">Trigger firing notification</param>
+        /// <param name="customData">Custom data attached to notification</param>
+        private void ShowUserNotification(string title, string body, int id, UNNotificationTrigger trigger, string customData)
         {
             if (!UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
-            {
                 return;
+
+            NSDictionary userInfo;
+
+            if (!string.IsNullOrWhiteSpace(customData))
+            {
+                userInfo = NSDictionary.FromObjectsAndKeys(
+                    new NSObject[]
+                    {
+                            NSObject.FromObject(id),
+                            NSObject.FromObject(customData),
+                    },
+                    new NSObject[]
+                    {
+                            NSObject.FromObject(NotificationKey),
+                            NSObject.FromObject(CrossLocalNotifications.LocalNotificationCustomData),
+                    });
             }
+            else userInfo = NSDictionary.FromObjectAndKey(NSObject.FromObject(id), NSObject.FromObject(NotificationKey));
 
             var content = new UNMutableNotificationContent()
             {
                 Title = title,
-                Body = body
+                Body = body,
+                UserInfo = userInfo,
+                Sound = UNNotificationSound.Default
             };
             
             var request = UNNotificationRequest.FromIdentifier(id.ToString(), content, trigger);

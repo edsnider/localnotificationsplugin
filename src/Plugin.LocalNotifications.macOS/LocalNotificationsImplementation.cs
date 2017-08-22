@@ -10,18 +10,30 @@ namespace Plugin.LocalNotifications
 	/// </summary>
 	public class LocalNotificationsImplementation : ILocalNotifications
 	{
-		/// <summary>
+        /// <summary>
 		/// Show a local notification
 		/// </summary>
 		/// <param name="title">Title of the notification</param>
 		/// <param name="body">Body or description of the notification</param>
 		/// <param name="id">Id of the notification</param>
 		public void Show(string title, string body, int id = 0)
+        {
+            Show(title, body, null, id);
+        }
+
+        /// <summary>
+        /// Show a local notification
+        /// </summary>
+        /// <param name="title">Title of the notification</param>
+        /// <param name="body">Body or description of the notification</param>
+        /// <param name="customData">Custom data to attach to notification</param>
+        /// <param name="id">Id of the notification</param>
+        public void Show(string title, string body, string customData, int id = 0)
 		{
-			Show(title, body, id, DateTime.Now);
+			Show(title, body, id, DateTime.Now, customData);
 		}
 
-		/// <summary>
+        /// <summary>
 		/// Show a local notification at a specified time
 		/// </summary>
 		/// <param name="title">Title of the notification</param>
@@ -29,15 +41,32 @@ namespace Plugin.LocalNotifications
 		/// <param name="id">Id of the notification</param>
 		/// <param name="notifyTime">Time to show notification</param>
 		public void Show(string title, string body, int id, DateTime notifyTime)
+        {
+            Show(title, body, id, notifyTime, null);
+        }
+
+        /// <summary>
+        /// Show a local notification at a specified time
+        /// </summary>
+        /// <param name="title">Title of the notification</param>
+        /// <param name="body">Body or description of the notification</param>
+        /// <param name="id">Id of the notification</param>
+        /// <param name="notifyTime">Time to show notification</param>
+        /// <param name="customData">Custom data attached to notification</param>
+        public void Show(string title, string body, int id, DateTime notifyTime, string customData)
 		{
 			var notification = new NSUserNotification()
 			{
 				Title = title,
 				InformativeText = body,
 				Identifier = id.ToString(),
-				DeliveryDate = (NSDate)notifyTime
-			};
-
+				DeliveryDate = (NSDate)notifyTime,
+                SoundName = NSUserNotification.NSUserNotificationDefaultSoundName,
+            };
+            if (!string.IsNullOrWhiteSpace(customData))
+                notification.UserInfo = NSDictionary.FromObjectAndKey(
+                    NSObject.FromObject(customData),
+                    NSObject.FromObject(CrossLocalNotifications.LocalNotificationCustomData));
 			NSUserNotificationCenter.DefaultUserNotificationCenter.ScheduleNotification(notification);
 		}
 
