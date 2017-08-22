@@ -71,6 +71,10 @@ namespace Plugin.LocalNotifications
             notificationManager.Notify(id, builder.Build());
         }
 
+        /// <summary>
+        /// Gets the launch Intent for the app.
+        /// </summary>
+        /// <returns>The Intent to launch the app.</returns>
         public static Intent GetLauncherActivity()
         {
             var packageName = Application.Context.PackageName;
