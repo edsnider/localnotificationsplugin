@@ -19,6 +19,7 @@ A consistent and easy way to show local notifications in Xamarin and Windows app
 |Windows Store (WinRT)|Yes|8.1+|
 |Windows (UWP)|Yes|10+|
 |Xamarin.Mac|No||
+|Tizen|Yes|4.0+|
 
 ### API Usage
 
