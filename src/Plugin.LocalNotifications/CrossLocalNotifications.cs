@@ -27,7 +27,7 @@ namespace Plugin.LocalNotifications
 
         private static ILocalNotifications CreateLocalNotificationsImplementation()
         {
-#if PCL
+#if NETSTANDARD1_0
             return null;
 #else
             return new LocalNotificationsImplementation();
