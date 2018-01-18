@@ -106,11 +106,9 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <None Include="LocalNotificationsImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Plugin.LocalNotifications.WinRT\LocalNotificationsImplementation.cs">
-      <Link>LocalNotificationsImplementation.cs</Link>
-    </Compile>
     <Compile Include="..\Plugin.LocalNotifications\CrossLocalNotifications.cs">
       <Link>CrossLocalNotifications.cs</Link>
     </Compile>
