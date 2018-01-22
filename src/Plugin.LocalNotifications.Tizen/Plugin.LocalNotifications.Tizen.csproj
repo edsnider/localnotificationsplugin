@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Property Group for Tizen Project -->
+  <PropertyGroup>
+    <TargetFramework>tizen40</TargetFramework>
+    <TizenCreateTpkOnBuild>false</TizenCreateTpkOnBuild>
+    <AssemblyName>Plugin.LocalNotifications</AssemblyName>
+    <RootNamespace>Plugin.LocalNotifications</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>None</DebugType>
+  </PropertyGroup>
+
+  <!-- Include Nuget Package for Tizen Project building -->
+  <ItemGroup>
+    <PackageReference Include="Tizen.NET" Version="4.0.0">
+      <ExcludeAssets>Runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Tizen.NET.Sdk" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Plugin.LocalNotifications\CrossLocalNotifications.cs">
+      <Link>CrossLocalNotifications.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plugin.LocalNotifications.Abstractions\Plugin.LocalNotifications.Abstractions.csproj">
+      <Project>{57564CE6-C079-47C5-9272-4395A0224C3D}</Project>
+      <Name>Plugin.LocalNotifications.Abstractions</Name>
+    </ProjectReference>
+  </ItemGroup>
+
+</Project>

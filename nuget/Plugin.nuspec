@@ -67,6 +67,10 @@
         <file src="src\Plugin.LocalNotifications.iOS\bin\iPhoneSimulator\Release\Plugin.LocalNotifications.xml" target="lib\Xamarin.iOS10\Plugin.LocalNotifications.xml" />
         <file src="src\Plugin.LocalNotifications.Abstractions\bin\Release\Plugin.LocalNotifications.Abstractions.dll" target="lib\Xamarin.iOS10\Plugin.LocalNotifications.Abstractions.dll" />
         <file src="src\Plugin.LocalNotifications.Abstractions\bin\Release\Plugin.LocalNotifications.Abstractions.xml" target="lib\Xamarin.iOS10\Plugin.LocalNotifications.Abstractions.xml" />
+
+        <!--Tizen-->
+        <file src="src\Plugin.LocalNotifications.Tizen\bin\Release\tizen40\Plugin.LocalNotifications.dll" target="lib\tizen40\Plugin.LocalNotifications.dll" />
+        <file src="src\Plugin.LocalNotifications.Abstractions\bin\Release\tizen40\Plugin.LocalNotifications.Abstractions.dll" target="lib\tizen40\Plugin.LocalNotifications.Abstractions.dll" />
     
     </files>
 </package>
