@@ -21,6 +21,11 @@ namespace Plugin.LocalNotifications
 			Show(title, body, id, DateTime.Now);
 		}
 
+        public void Show(string title, string body, int id = 0, string backgroundColor = null, string smallIcon = null, string largeIcon = null)
+        {
+            Show(title, body, id, DateTime.Now);
+        }
+
 		/// <summary>
 		/// Show a local notification at a specified time
 		/// </summary>
@@ -30,16 +35,21 @@ namespace Plugin.LocalNotifications
 		/// <param name="notifyTime">Time to show notification</param>
 		public void Show(string title, string body, int id, DateTime notifyTime)
 		{
-			var notification = new NSUserNotification()
-			{
-				Title = title,
-				InformativeText = body,
-				Identifier = id.ToString(),
-				DeliveryDate = (NSDate)notifyTime
-			};
+            var notification = new NSUserNotification()
+            {
+                Title = title,
+                InformativeText = body,
+                Identifier = id.ToString(),
+                DeliveryDate = (NSDate)notifyTime
+            };
 
-			NSUserNotificationCenter.DefaultUserNotificationCenter.ScheduleNotification(notification);
+            NSUserNotificationCenter.DefaultUserNotificationCenter.ScheduleNotification(notification);
 		}
+
+        public void Show(string title, string body, int id, DateTime notifyTime, string backgroundColor = null, string smallIcon = null, string largeIcon = null)
+        {
+            Show(title, body, id, notifyTime);
+        }
 
 		/// <summary>
 		/// Cancel a local notification

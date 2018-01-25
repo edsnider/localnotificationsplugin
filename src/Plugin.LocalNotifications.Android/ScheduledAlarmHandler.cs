@@ -2,6 +2,8 @@ using System.IO;
 using System.Xml.Serialization;
 using Android.App;
 using Android.Content;
+using Android.Graphics;
+using Android.OS;
 using Android.Support.V4.App;
 
 namespace Plugin.LocalNotifications
@@ -30,8 +32,14 @@ namespace Plugin.LocalNotifications
             var builder = new NotificationCompat.Builder(Application.Context)
                 .SetContentTitle(notification.Title)
                 .SetContentText(notification.Body)
-                .SetSmallIcon(notification.IconId)
+                // .SetSmallIcon(notification.IconId)
                 .SetAutoCancel(true);
+
+            if (notification.SmallIconId > 0 && !(Build.VERSION.SdkInt <= BuildVersionCodes.Kitkat)) builder.SetSmallIcon(notification.SmallIconId);
+            else builder.SetSmallIcon(notification.IconId);
+
+            if (notification.LargeIconId > 0 && !(Build.VERSION.SdkInt <= BuildVersionCodes.Kitkat)) builder.SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, notification.LargeIconId));
+            if (notification.BackgroundColor.HasValue && !(Build.VERSION.SdkInt <= BuildVersionCodes.Kitkat)) builder.SetColor(notification.BackgroundColor.Value);
 
             var resultIntent = LocalNotificationsImplementation.GetLauncherActivity();
             resultIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);

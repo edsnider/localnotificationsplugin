@@ -33,6 +33,11 @@ namespace Plugin.LocalNotifications
             }
         }
 
+        public void Show(string title, string body, int id = 0, string backgroundColor = null, string smallIcon = null, string largeIcon = null)
+        {
+            Show(title, body, id);
+        }
+
         /// <summary>
         /// Show a local notification at a specified time
         /// </summary>
@@ -59,6 +64,11 @@ namespace Plugin.LocalNotifications
 
                 UIApplication.SharedApplication.ScheduleLocalNotification(notification);
             }
+        }
+
+        public void Show(string title, string body, int id, DateTime notifyTime, string backgroundColor = null, string smallIcon = null, string largeIcon = null)
+        {
+            Show(title, body, id);
         }
 
         /// <summary>

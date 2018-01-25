@@ -5,6 +5,8 @@ using Plugin.LocalNotifications.Abstractions;
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using Android.Graphics;
+using Android.OS;
 
 namespace Plugin.LocalNotifications
 {
@@ -30,7 +32,6 @@ namespace Plugin.LocalNotifications
             builder.SetContentTitle(title);
             builder.SetContentText(body);
             builder.SetAutoCancel(true);
-
             if (NotificationIconId != 0)
             {
                 builder.SetSmallIcon(NotificationIconId);
@@ -52,12 +53,69 @@ namespace Plugin.LocalNotifications
             notificationManager.Notify(id, builder.Build());
         }
 
+        /// <summary>
+        /// Show a local notification
+        /// </summary>
+        /// <param name="title">Title of the notification</param>
+        /// <param name="body">Body or description of the notification</param>
+        /// <param name="id">Id of the notification</param>
+        /// <param name="backgroundColor">Small icon background color (works only in Android)</param>
+        /// <param name="smallIcon">Small icon asset name (works only in Android)</param>
+        /// <param name="largeIcon">Large icon asset name (works only in Android)</param>
+        public void Show(string title, string body, int id = 0, string backgroundColor = null, string smallIcon = null, string largeIcon = null)
+        {
+            var builder = new NotificationCompat.Builder(Application.Context);
+            builder.SetContentTitle(title);
+            builder.SetContentText(body);
+            builder.SetAutoCancel(true);
+
+            int smallIconId = !String.IsNullOrEmpty(smallIcon) ? GetDrawableId(smallIcon) : -1;
+            int largeIconId = !String.IsNullOrEmpty(largeIcon) ? GetDrawableId(largeIcon) : -1;
+
+            if (smallIconId > 0 && !(Build.VERSION.SdkInt <= BuildVersionCodes.Kitkat))
+            {
+                builder.SetSmallIcon(smallIconId);
+            }
+            else
+            {
+                if (NotificationIconId != 0)
+                {
+                    builder.SetSmallIcon(NotificationIconId);
+                }
+                else
+                {
+                    builder.SetSmallIcon(Resource.Drawable.plugin_lc_smallicon);
+                }
+            }
+
+            if (largeIconId > 0 && !(Build.VERSION.SdkInt <= BuildVersionCodes.Kitkat))
+            {
+                builder.SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, largeIconId));
+            }
+
+            if (!String.IsNullOrEmpty(backgroundColor) && !(Build.VERSION.SdkInt <= BuildVersionCodes.Kitkat)) {
+                builder.SetColor(Color.ParseColor(backgroundColor));
+            }
+
+            var resultIntent = GetLauncherActivity();
+            resultIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+            var stackBuilder = Android.Support.V4.App.TaskStackBuilder.Create(Application.Context);
+            stackBuilder.AddNextIntent(resultIntent);
+            var resultPendingIntent =
+                stackBuilder.GetPendingIntent(0, (int)PendingIntentFlags.UpdateCurrent);
+            builder.SetContentIntent(resultPendingIntent);
+
+            var notificationManager = NotificationManagerCompat.From(Application.Context);
+            notificationManager.Notify(id, builder.Build());
+        }
+
 
         public static Intent GetLauncherActivity()
         {
             var packageName = Application.Context.PackageName;
             return Application.Context.PackageManager.GetLaunchIntentForPackage(packageName);
         }
+
         /// <summary>
         /// Show a local notification at a specified time
         /// </summary>
@@ -83,6 +141,52 @@ namespace Plugin.LocalNotifications
                 localNotification.IconId = Resource.Drawable.plugin_lc_smallicon;
             }
 
+            var serializedNotification = SerializeNotification(localNotification);
+            intent.PutExtra(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
+
+            var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.CancelCurrent);
+            var triggerTime = NotifyTimeInMilliseconds(localNotification.NotifyTime);
+            var alarmManager = GetAlarmManager();
+
+            alarmManager.Set(AlarmType.RtcWakeup, triggerTime, pendingIntent);
+        }
+
+        /// <summary>
+        /// Show a local notification at a specified time
+        /// </summary>
+        /// <param name="title">Title of the notification</param>
+        /// <param name="body">Body or description of the notification</param>
+        /// <param name="id">Id of the notification</param>
+        /// <param name="notifyTime">Time to show notification</param>
+        /// <param name="backgroundColor">Small icon background color (works only in Android)</param>
+        /// <param name="smallIcon">Small icon asset name (works only in Android)</param>
+        /// <param name="largeIcon">Large icon asset name (works only in Android)</param>
+        public void Show(string title, string body, int id, DateTime notifyTime, string backgroundColor = null, string smallIcon = null, string largeIcon = null)
+        {
+            var intent = CreateIntent(id);
+
+            var localNotification = new LocalNotification();
+            localNotification.Title = title;
+            localNotification.Body = body;
+            localNotification.Id = id;
+            localNotification.NotifyTime = notifyTime;
+            if (NotificationIconId != 0)
+            {
+                localNotification.IconId = NotificationIconId;
+            }
+            else
+            {
+                localNotification.IconId = Resource.Drawable.plugin_lc_smallicon;
+            }
+
+            localNotification.SmallIconId = !String.IsNullOrEmpty(smallIcon) ? GetDrawableId(smallIcon) : -1;
+            localNotification.LargeIconId = !String.IsNullOrEmpty(largeIcon) ? GetDrawableId(largeIcon) : -1;
+
+            if (!String.IsNullOrEmpty(backgroundColor))
+                localNotification.BackgroundColor = Color.ParseColor(backgroundColor);
+            else
+                localNotification.BackgroundColor = null;
+        
             var serializedNotification = SerializeNotification(localNotification);
             intent.PutExtra(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
 
@@ -139,6 +243,10 @@ namespace Plugin.LocalNotifications
 
             var utcAlarmTimeInMillis = utcTime.AddSeconds(-epochDifference).Ticks / 10000;
             return utcAlarmTimeInMillis;
+        }
+
+        private int GetDrawableId(string name) {
+            return Application.Context.Resources.GetIdentifier(name, "drawable", Application.Context.PackageName);    
         }
     }
 }
