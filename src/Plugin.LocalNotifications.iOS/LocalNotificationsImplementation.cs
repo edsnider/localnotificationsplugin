@@ -68,7 +68,7 @@ namespace Plugin.LocalNotifications
 
         public void Show(string title, string body, int id, DateTime notifyTime, string backgroundColor = null, string smallIcon = null, string largeIcon = null)
         {
-            Show(title, body, id);
+            Show(title, body, id, notifyTime);
         }
 
         /// <summary>
