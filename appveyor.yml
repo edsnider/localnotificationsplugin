@@ -1,0 +1,23 @@
+only_commits:
+  files:
+    - src/
+    - CHANGELOG.md
+    - nuget/*.nuspec
+image: Visual Studio 2017
+configuration: Release
+init:
+- cmd: IF "%APPVEYOR_REPO_TAG%"=="true" ( appveyor UpdateBuild -Version "%APPVEYOR_REPO_TAG_NAME%" ) ELSE ( appveyor UpdateBuild -Version "1.0.1-beta%APPVEYOR_BUILD_NUMBER%" )
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+before_build:
+- cmd: nuget restore src/LocalNotificationsPlugin.sln
+build:
+  verbosity: minimal
+after_build:
+- cmd: nuget pack nuget/Plugin.LocalNotifications.nuspec -basepath "./" -version "%APPVEYOR_BUILD_VERSION%"
+artifacts:
+- path: '**\*.nupkg'
