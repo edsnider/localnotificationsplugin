@@ -6,7 +6,7 @@ only_commits:
 image: Visual Studio 2017
 configuration: Release
 init:
-- cmd: IF "%APPVEYOR_REPO_TAG%"=="true" ( appveyor UpdateBuild -Version "%APPVEYOR_REPO_TAG_NAME%" ) ELSE ( appveyor UpdateBuild -Version "1.0.1-beta%APPVEYOR_BUILD_NUMBER%" )
+- cmd: IF "%APPVEYOR_REPO_TAG%"=="true" ( appveyor UpdateBuild -Version "%APPVEYOR_REPO_TAG_NAME%" ) ELSE ( appveyor UpdateBuild -Version "3.0.0-beta%APPVEYOR_BUILD_NUMBER%" )
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
