@@ -9,7 +9,7 @@ init:
 - cmd: IF "%APPVEYOR_REPO_TAG%"=="true" ( appveyor UpdateBuild -Version "%APPVEYOR_REPO_TAG_NAME%" ) ELSE ( appveyor UpdateBuild -Version "3.0.0-beta%APPVEYOR_BUILD_NUMBER%" )
 assembly_info:
   patch: true
-  file: '**\AssemblyInfo.*'
+  file: 'src\**\AssemblyInfo.*'
   assembly_version: '{version}'
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
@@ -21,4 +21,4 @@ build:
 after_build:
 - cmd: nuget pack nuget/Plugin.LocalNotifications.nuspec -basepath "./" -version "%APPVEYOR_BUILD_VERSION%"
 artifacts:
-- path: '**\*.nupkg'
+- path: '*.nupkg'
