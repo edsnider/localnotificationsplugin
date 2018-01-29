@@ -16,6 +16,7 @@ assembly_info:
 before_build:
 - cmd: nuget restore src/LocalNotificationsPlugin.sln
 build:
+  project: src/LocalNotificationsPlugin.sln
   verbosity: minimal
 after_build:
 - cmd: nuget pack nuget/Plugin.LocalNotifications.nuspec -basepath "./" -version "%APPVEYOR_BUILD_VERSION%"
