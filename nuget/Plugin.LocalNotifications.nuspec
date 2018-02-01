@@ -21,7 +21,7 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="src\Plugin.LocalNotifications\bin\Release\netstandard1.0\Plugin.LocalNotifications.*" target="lib\netstandard1.1" />
+        <file src="src\Plugin.LocalNotifications\bin\Release\netstandard1.0\Plugin.LocalNotifications.*" target="lib\netstandard1.0" />
         <file src="src\Plugin.LocalNotifications.Android\bin\Release\Plugin.LocalNotifications.*" target="lib\MonoAndroid10" />
         <file src="src\Plugin.LocalNotifications.iOS\bin\Release\Plugin.LocalNotifications.*" target="lib\Xamarin.iOS10" />
         <file src="src\Plugin.LocalNotifications.macOS\bin\Release\Plugin.LocalNotifications.*" target="lib\Xamarin.Mac20" />
