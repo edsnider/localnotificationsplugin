@@ -88,7 +88,7 @@ Currently, if the phone is re-booted then the pending notifications are not sent
 You can set the notification Icon by setting the following property from inside your Android project:
 
 ```csharp
-LocalNotificationsImplementation.NotificationIconId = Resrouce.Drawable.YOU_ICON_HERE
+LocalNotificationsImplementation.NotificationIconId = Resource.Drawable.YOU_ICON_HERE
 ```
 
 ### Contributors
