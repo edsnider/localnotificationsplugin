@@ -1,9 +1,11 @@
 using Android.App;
 using Android.Content;
+using Android.OS;
 using Android.Support.V4.App;
 using Plugin.LocalNotifications.Abstractions;
 using System;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace Plugin.LocalNotifications
@@ -19,6 +21,21 @@ namespace Plugin.LocalNotifications
         public static int NotificationIconId { get; set; }
 
         /// <summary>
+        /// Get or Set id of the default channel for the app
+        /// </summary>
+        public static string GeneralChannelId { get; set; }
+
+        /// <summary>
+        /// Get or Set the user visible name of this channel.
+        /// </summary>
+        public static string GeneralChannelName { get; set; } = "General";
+
+        /// <summary>
+        /// Get or Set this channel's notification importance
+        /// </summary>
+        public static NotificationImportance GeneralChannelImportance { get; set; } = NotificationImportance.Default;
+
+        /// <summary>
         /// Show a local notification
         /// </summary>
         /// <param name="title">Title of the notification</param>
@@ -26,30 +43,75 @@ namespace Plugin.LocalNotifications
         /// <param name="id">Id of the notification</param>
         public void Show(string title, string body, int id = 0)
         {
-            var builder = new NotificationCompat.Builder(Application.Context);
-            builder.SetContentTitle(title);
-            builder.SetContentText(body);
-            builder.SetAutoCancel(true);
+            NotificationManager notificationManager = Android.App.Application.Context.GetSystemService(Context.NotificationService) as NotificationManager;
 
-            if (NotificationIconId != 0)
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
-                builder.SetSmallIcon(NotificationIconId);
+                if (GeneralChannelId == null)
+                {
+                    throw new NullReferenceException("[LocalNotificationsImplementation] You need to defined GeneralChannelId for Android (Build.VERSION.SdkInt >= BuildVersionCodes.O). " +
+                        "Example: LocalNotificationImplementation.GeneralChannelId = \"com.yourapp.general\"");
+                }
+                else
+                {
+                    if (!notificationManager.NotificationChannels.Any(x => x.Id == GeneralChannelId))
+                    {
+
+                        NotificationChannel generalChannel = new NotificationChannel(GeneralChannelId, GeneralChannelName, GeneralChannelImportance);
+                        generalChannel.EnableVibration(false);
+                        generalChannel.LockscreenVisibility = NotificationVisibility.Public;
+                        notificationManager.CreateNotificationChannel(generalChannel);
+                    }
+                    Notification.Builder builder = new Notification.Builder(Application.Context, GeneralChannelId)
+                        .SetContentTitle(title)
+                        .SetContentText(body)
+                        .SetAutoCancel(true)
+                        .SetOngoing(false);
+
+                    if (NotificationIconId != 0)
+                    {
+                        builder.SetSmallIcon(NotificationIconId);
+                    }
+                    else
+                    {
+                        builder.SetSmallIcon(Resource.Drawable.plugin_lc_smallicon);
+                    }
+                    var resultIntent = GetLauncherActivity();
+                    resultIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+                    var stackBuilder = Android.Support.V4.App.TaskStackBuilder.Create(Application.Context);
+                    stackBuilder.AddNextIntent(resultIntent);
+                    var resultPendingIntent =
+                        stackBuilder.GetPendingIntent(0, (int)PendingIntentFlags.UpdateCurrent);
+                    builder.SetContentIntent(resultPendingIntent);
+                    notificationManager.Notify(id, builder.Build());
+                }
             }
             else
             {
-                builder.SetSmallIcon(Resource.Drawable.plugin_lc_smallicon);
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(Application.Context);
+                builder.SetContentTitle(title);
+                builder.SetContentText(body);
+                builder.SetAutoCancel(true);
+
+                if (NotificationIconId != 0)
+                {
+                    builder.SetSmallIcon(NotificationIconId);
+                }
+                else
+                {
+                    builder.SetSmallIcon(Resource.Drawable.plugin_lc_smallicon);
+                }
+
+                var resultIntent = GetLauncherActivity();
+                resultIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+                var stackBuilder = Android.Support.V4.App.TaskStackBuilder.Create(Application.Context);
+                stackBuilder.AddNextIntent(resultIntent);
+                var resultPendingIntent =
+                    stackBuilder.GetPendingIntent(0, (int)PendingIntentFlags.UpdateCurrent);
+                builder.SetContentIntent(resultPendingIntent);
+
+                notificationManager.Notify(id, builder.Build());
             }
-
-            var resultIntent = GetLauncherActivity();
-            resultIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
-            var stackBuilder = Android.Support.V4.App.TaskStackBuilder.Create(Application.Context);
-            stackBuilder.AddNextIntent(resultIntent);
-            var resultPendingIntent =
-                stackBuilder.GetPendingIntent(0, (int)PendingIntentFlags.UpdateCurrent);
-            builder.SetContentIntent(resultPendingIntent);
-
-            var notificationManager = NotificationManagerCompat.From(Application.Context);
-            notificationManager.Notify(id, builder.Build());
         }
 
 
