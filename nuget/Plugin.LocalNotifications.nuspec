@@ -12,7 +12,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>The local notification plugin provides a simple, cross-platform way to show local notifications from within Xamarin and UWP apps.</description>
         <summary>Cross platform plugin to show local notifications.</summary>
-        <tags>toast, alert, notifications, xamarin, android, ios, xam.plugins, xam.pcl, plugin, xamarin.forms, uwp, macos</tags>
+        <tags>ios, android, macos, windows, xamarin.ios, xamarin.android, xamarin.mac, uwp, notifications, toast, alert, iphone, ipad, xamarin, xam.plugin, plugin</tags>
         <releaseNotes>https://github.com/edsnider/LocalNotificationsPlugin/blob/master/CHANGELOG.md</releaseNotes>
         <dependencies>
             <group targetFramework="MonoAndroid10">
