@@ -5,6 +5,7 @@ using Plugin.LocalNotifications.Abstractions;
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using Android.OS;
 
 namespace Plugin.LocalNotifications
 {
@@ -13,6 +14,9 @@ namespace Plugin.LocalNotifications
     /// </summary>
     public class LocalNotificationsImplementation : ILocalNotifications
     {
+        string _packageName => Application.Context.PackageName;
+        NotificationManager _manager => (NotificationManager)Application.Context.GetSystemService(Context.NotificationService);
+
         /// <summary>
         /// Get or Set Resource Icon to display
         /// </summary>
@@ -26,7 +30,7 @@ namespace Plugin.LocalNotifications
         /// <param name="id">Id of the notification</param>
         public void Show(string title, string body, int id = 0)
         {
-            var builder = new NotificationCompat.Builder(Application.Context);
+            var builder = new Notification.Builder(Application.Context);
             builder.SetContentTitle(title);
             builder.SetContentText(body);
             builder.SetAutoCancel(true);
@@ -40,6 +44,16 @@ namespace Plugin.LocalNotifications
                 builder.SetSmallIcon(Resource.Drawable.plugin_lc_smallicon);
             }
 
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                var channelId = $"{_packageName}.general";
+                var channel = new NotificationChannel(channelId, "General", NotificationImportance.Default);
+
+                _manager.CreateNotificationChannel(channel);
+
+                builder.SetChannelId(channelId);
+            }
+
             var resultIntent = GetLauncherActivity();
             resultIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
             var stackBuilder = Android.Support.V4.App.TaskStackBuilder.Create(Application.Context);
@@ -48,16 +62,15 @@ namespace Plugin.LocalNotifications
                 stackBuilder.GetPendingIntent(0, (int)PendingIntentFlags.UpdateCurrent);
             builder.SetContentIntent(resultPendingIntent);
 
-            var notificationManager = NotificationManagerCompat.From(Application.Context);
-            notificationManager.Notify(id, builder.Build());
+            _manager.Notify(id, builder.Build());
         }
-
 
         public static Intent GetLauncherActivity()
         {
             var packageName = Application.Context.PackageName;
             return Application.Context.PackageManager.GetLaunchIntentForPackage(packageName);
         }
+
         /// <summary>
         /// Show a local notification at a specified time
         /// </summary>
