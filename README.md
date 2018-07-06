@@ -11,15 +11,13 @@ A consistent and easy way to show local notifications in Xamarin and Windows app
 
 **Platform Support**
 
-|Platform|Supported|Version|
-| ------------------- | :-----------: | :------------------: |
-|Xamarin.iOS|Yes|iOS 7+|
-|Xamarin.Android|Yes|API 10+|
-|Windows Phone (Silverlight)|Yes|8.1+|
-|Windows Phone (WinRT)|Yes|8.1+|
-|Windows Store (WinRT)|Yes|8.1+|
-|Windows (UWP)|Yes|10+|
-|Xamarin.Mac|No||
+|Platform|Version|
+| ------------------- | :------------------: |
+|Xamarin.iOS|7.0+|
+|Xamarin.Android|API 10+|
+|Xamarin.Mac|10.7+|
+|Windows (UWP)|10.0+|
+
 
 ### API Usage
 
