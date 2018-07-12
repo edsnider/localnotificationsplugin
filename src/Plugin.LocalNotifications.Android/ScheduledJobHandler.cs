@@ -9,6 +9,7 @@ namespace Plugin.LocalNotifications
     [Service(Name = "Plugin.LocalNotifications.ScheduledJobHandler", Permission = "android.permission.BIND_JOB_SERVICE")]
     public class ScheduledJobHandler : JobService
     {
+        string _packageName => Application.Context.PackageName;
 
         /// <summary>
         /// 
@@ -30,7 +31,6 @@ namespace Plugin.LocalNotifications
             return false; // Don't reschedule the job.
         }
 
-
         private LocalNotification DeserializeNotification(string notificationString)
         {
             var xmlSerializer = new XmlSerializer(typeof(LocalNotification));
@@ -39,13 +39,6 @@ namespace Plugin.LocalNotifications
                 var notification = (LocalNotification)xmlSerializer.Deserialize(stringReader);
                 return notification;
             }
-        }
-
-
-
-
-
-
-        
+        } 
     }
 }

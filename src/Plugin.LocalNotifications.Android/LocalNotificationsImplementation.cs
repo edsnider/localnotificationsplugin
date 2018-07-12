@@ -98,7 +98,9 @@ namespace Plugin.LocalNotifications
             }
 
             var serializedNotification = SerializeNotification(localNotification);
-            var triggerTime = NotifyTimeInMilliseconds(localNotification.NotifyTime);
+            
+
+            
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
             {
@@ -109,15 +111,19 @@ namespace Plugin.LocalNotifications
                 var extras = new PersistableBundle();
                 extras.PutString(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
 
+                var triggerTime = NotifyTimeInMilliseconds(localNotification.NotifyTime) - NotifyTimeInMilliseconds(DateTime.Now);
+
                 JobInfo.Builder builder = new JobInfo.Builder(id, component)
                                                      .SetMinimumLatency(triggerTime)   // Fire at TriggerTime
                                                      .SetOverrideDeadline(triggerTime + 5000) // Or at least 5 Seconds Later
                                                      .SetExtras(extras)
-                                                     .SetPersisted(true); //Job will be recreated after Reboot
+                                                     .SetPersisted(CheckBootPermission()); //Job will be recreated after Reboot if Permissions are granted
                 JobInfo jobInfo = builder.Build();
 
-                JobScheduler jobScheduler = (JobScheduler)Application.Context.GetSystemService("JobSchedulerService");
+                JobScheduler jobScheduler = GetJobScheduler();
+
                 int result = jobScheduler.Schedule(jobInfo);
+
                 if (result == JobScheduler.ResultSuccess)
                 {
                     // The job was scheduled. So nothing more to do
@@ -125,7 +131,7 @@ namespace Plugin.LocalNotifications
                 else
                 {
                     // The job wasn´t scheduled. So just use the old implementation?
-                    
+                    triggerTime = NotifyTimeInMilliseconds(localNotification.NotifyTime);
                     intent.PutExtra(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
 
                     var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.CancelCurrent);
@@ -142,7 +148,7 @@ namespace Plugin.LocalNotifications
                 var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.CancelCurrent);
                 
                 var alarmManager = GetAlarmManager();
-
+                var triggerTime = NotifyTimeInMilliseconds(localNotification.NotifyTime);
                 alarmManager.Set(AlarmType.RtcWakeup, triggerTime, pendingIntent);
             }
         }
@@ -182,6 +188,17 @@ namespace Plugin.LocalNotifications
         {
             var alarmManager = Application.Context.GetSystemService(Context.AlarmService) as AlarmManager;
             return alarmManager;
+        }
+
+        private JobScheduler GetJobScheduler()
+        {
+            var jobScheduler = Application.Context.GetSystemService(Context.JobSchedulerService) as JobScheduler;
+            return jobScheduler;
+        }
+
+        private bool CheckBootPermission()
+        {
+            return Application.Context.CheckSelfPermission("RECEIVE_BOOT_COMPLETED") == Android.Content.PM.Permission.Granted;
         }
 
         private string SerializeNotification(LocalNotification notification)
