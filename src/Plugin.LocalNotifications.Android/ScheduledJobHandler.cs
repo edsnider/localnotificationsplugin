@@ -9,7 +9,6 @@ namespace Plugin.LocalNotifications
     [Service(Name = "Plugin.LocalNotifications.ScheduledJobHandler", Permission = "android.permission.BIND_JOB_SERVICE")]
     public class ScheduledJobHandler : JobService
     {
-        string _packageName => Application.Context.PackageName;
 
         /// <summary>
         /// 
