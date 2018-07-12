@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Xml.Serialization;
 using Android.OS;
+using Android.App.Job;
 
 namespace Plugin.LocalNotifications
 {
@@ -97,13 +98,53 @@ namespace Plugin.LocalNotifications
             }
 
             var serializedNotification = SerializeNotification(localNotification);
-            intent.PutExtra(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
-
-            var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.CancelCurrent);
             var triggerTime = NotifyTimeInMilliseconds(localNotification.NotifyTime);
-            var alarmManager = GetAlarmManager();
 
-            alarmManager.Set(AlarmType.RtcWakeup, triggerTime, pendingIntent);
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+            {
+                Java.Lang.Class javaClass = Java.Lang.Class.FromType(typeof(ScheduledJobHandler));
+                ComponentName component = new ComponentName(Application.Context, javaClass);
+
+                // Bundle up parameters
+                var extras = new PersistableBundle();
+                extras.PutString(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
+
+                JobInfo.Builder builder = new JobInfo.Builder(id, component)
+                                                     .SetMinimumLatency(triggerTime)   // Fire at TriggerTime
+                                                     .SetOverrideDeadline(triggerTime + 5000) // Or at least 5 Seconds Later
+                                                     .SetExtras(extras)
+                                                     .SetPersisted(true); //Job will be recreated after Reboot
+                JobInfo jobInfo = builder.Build();
+
+                JobScheduler jobScheduler = (JobScheduler)Application.Context.GetSystemService("JobSchedulerService");
+                int result = jobScheduler.Schedule(jobInfo);
+                if (result == JobScheduler.ResultSuccess)
+                {
+                    // The job was scheduled. So nothing more to do
+                }
+                else
+                {
+                    // The job wasn´t scheduled. So just use the old implementation?
+                    
+                    intent.PutExtra(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
+
+                    var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.CancelCurrent);
+
+                    var alarmManager = GetAlarmManager();
+
+                    alarmManager.Set(AlarmType.RtcWakeup, triggerTime, pendingIntent);
+                }
+            }
+            else
+            {
+                intent.PutExtra(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
+
+                var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.CancelCurrent);
+                
+                var alarmManager = GetAlarmManager();
+
+                alarmManager.Set(AlarmType.RtcWakeup, triggerTime, pendingIntent);
+            }
         }
 
         /// <summary>
@@ -112,14 +153,22 @@ namespace Plugin.LocalNotifications
         /// <param name="id">Id of the notification to cancel</param>
         public void Cancel(int id)
         {
-            var intent = CreateIntent(id);
-            var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.CancelCurrent);
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+            {
+                JobScheduler jobScheduler = (JobScheduler)Application.Context.GetSystemService("JobSchedulerService");
+                jobScheduler.Cancel(id);
+            }
+            else
+            {
+                var intent = CreateIntent(id);
+                var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.CancelCurrent);
 
-            var alarmManager = GetAlarmManager();
-            alarmManager.Cancel(pendingIntent);
+                var alarmManager = GetAlarmManager();
+                alarmManager.Cancel(pendingIntent);
 
-            var notificationManager = NotificationManagerCompat.From(Application.Context);
-            notificationManager.Cancel(id);
+                var notificationManager = NotificationManagerCompat.From(Application.Context);
+                notificationManager.Cancel(id);
+            } 
         }
 
         private Intent CreateIntent(int id)
