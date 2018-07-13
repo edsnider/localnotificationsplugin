@@ -130,7 +130,7 @@ namespace Plugin.LocalNotifications
                 }
                 else
                 {
-                    // The job wasn´t scheduled. So just use the old implementation?
+                    // The job wasnÂ´t scheduled. So just use the old implementation?
                     triggerTime = NotifyTimeInMilliseconds(localNotification.NotifyTime);
                     intent.PutExtra(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
 
@@ -161,7 +161,7 @@ namespace Plugin.LocalNotifications
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
             {
-                JobScheduler jobScheduler = (JobScheduler)Application.Context.GetSystemService("JobSchedulerService");
+                JobScheduler jobScheduler = GetJobScheduler();
                 jobScheduler.Cancel(id);
             }
             else
