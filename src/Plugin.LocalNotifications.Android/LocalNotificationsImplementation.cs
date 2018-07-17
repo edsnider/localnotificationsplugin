@@ -110,6 +110,7 @@ namespace Plugin.LocalNotifications
                 // Bundle up parameters
                 var extras = new PersistableBundle();
                 extras.PutString(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
+                extras.PutInt(ScheduledJobHandler.LocalNotificationIconId, NotificationIconId);
 
                 var triggerTime = NotifyTimeInMilliseconds(localNotification.NotifyTime) - NotifyTimeInMilliseconds(DateTime.Now);
 
@@ -130,7 +131,7 @@ namespace Plugin.LocalNotifications
                 }
                 else
                 {
-                    // The job wasnÂ´t scheduled. So just use the old implementation?
+                    // The job wasn´t scheduled. So just use the old implementation?
                     triggerTime = NotifyTimeInMilliseconds(localNotification.NotifyTime);
                     intent.PutExtra(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
 

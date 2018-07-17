@@ -9,6 +9,10 @@ namespace Plugin.LocalNotifications
     [Service(Name = "Plugin.LocalNotifications.ScheduledJobHandler", Permission = "android.permission.BIND_JOB_SERVICE")]
     public class ScheduledJobHandler : JobService
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string LocalNotificationIconId = "LocalNotificationIconId";
 
         /// <summary>
         /// 
@@ -18,8 +22,10 @@ namespace Plugin.LocalNotifications
         public override bool OnStartJob(JobParameters jobParams)
         {
             var extra = jobParams.Extras.GetString(ScheduledAlarmHandler.LocalNotificationKey);
+            var NotificationIconId = jobParams.Extras.GetInt(LocalNotificationIconId);
             var notification = DeserializeNotification(extra);
 
+            LocalNotificationsImplementation.NotificationIconId = NotificationIconId;
             CrossLocalNotifications.Current.Show(notification.Title, notification.Body, notification.Id);
             return true;
         }
