@@ -6,7 +6,7 @@ using Android.App.Job;
 
 namespace Plugin.LocalNotifications
 {
-    [Service(Name = "Plugin.LocalNotifications.ScheduledJobHandler", Permission = "android.permission.BIND_JOB_SERVICE")]
+    [Service(Name = "plugin.localnotifications.ScheduledJobHandler", Permission = "android.permission.BIND_JOB_SERVICE")]
     public class ScheduledJobHandler : JobService
     {
         /// <summary>
