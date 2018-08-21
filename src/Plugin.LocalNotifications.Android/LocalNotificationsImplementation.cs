@@ -27,13 +27,15 @@ namespace Plugin.LocalNotifications
         /// </summary>
         /// <param name="title">Title of the notification</param>
         /// <param name="body">Body or description of the notification</param>
+        /// <param name="action">Notification action</param>
         /// <param name="id">Id of the notification</param>
-        public void Show(string title, string body, int id = 0)
+        public void Show(string title, string body, Notification.Action action = null, int id = 0)
         {
             var builder = new Notification.Builder(Application.Context);
             builder.SetContentTitle(title);
             builder.SetContentText(body);
             builder.SetAutoCancel(true);
+            builder.AddAction(action);
 
             if (NotificationIconId != 0)
             {
