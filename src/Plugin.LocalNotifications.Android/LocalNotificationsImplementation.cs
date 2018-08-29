@@ -131,7 +131,7 @@ namespace Plugin.LocalNotifications
                 }
                 else
                 {
-                    // The job wasn´t scheduled. So just use the old implementation?
+                    // The job wasnÂ´t scheduled. So just use the old implementation?
                     triggerTime = NotifyTimeInMilliseconds(localNotification.NotifyTime);
                     intent.PutExtra(ScheduledAlarmHandler.LocalNotificationKey, serializedNotification);
 
@@ -199,7 +199,7 @@ namespace Plugin.LocalNotifications
 
         private bool CheckBootPermission()
         {
-            return Application.Context.CheckSelfPermission("RECEIVE_BOOT_COMPLETED") == Android.Content.PM.Permission.Granted;
+            return Application.Context.CheckSelfPermission("android.permission.RECEIVE_BOOT_COMPLETED") == Android.Content.PM.Permission.Granted;
         }
 
         private string SerializeNotification(LocalNotification notification)
