@@ -21,6 +21,7 @@ namespace Plugin.LocalNotifications
         /// Get or Set Resource Icon to display
         /// </summary>
         public static int NotificationIconId { get; set; }
+        public static NotificationImportance Importance { get; set; } = NotificationImportance.Default;
 
         /// <summary>
         /// Show a local notification
@@ -47,7 +48,8 @@ namespace Plugin.LocalNotifications
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
                 var channelId = $"{_packageName}.general";
-                var channel = new NotificationChannel(channelId, "General", NotificationImportance.Default);
+                //var channel = new NotificationChannel(channelId, "General", NotificationImportance.Default);
+                var channel = new NotificationChannel(channelId, "General", Importance);
 
                 _manager.CreateNotificationChannel(channel);
 
