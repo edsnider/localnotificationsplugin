@@ -22,6 +22,8 @@ namespace Plugin.LocalNotifications
         /// </summary>
         public static int NotificationIconId { get; set; }
         public static NotificationImportance Importance { get; set; } = NotificationImportance.Default;
+        public static int Priority { get; set; } = NotificationCompat.PriorityDefault;
+        public static long[] Vibrate { get; set; } = new long[0]; 
 
         /// <summary>
         /// Show a local notification
@@ -32,9 +34,14 @@ namespace Plugin.LocalNotifications
         public void Show(string title, string body, int id = 0)
         {
             var builder = new Notification.Builder(Application.Context);
+            //var builder = new NotificationCompat.Builder(Application.Context);
+
             builder.SetContentTitle(title);
             builder.SetContentText(body);
             builder.SetAutoCancel(true);
+            builder.SetPriority(Priority);
+            builder.SetVibrate(Vibrate);
+
 
             if (NotificationIconId != 0)
             {
