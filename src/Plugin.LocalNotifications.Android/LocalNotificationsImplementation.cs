@@ -23,7 +23,8 @@ namespace Plugin.LocalNotifications
         public static int NotificationIconId { get; set; }
         public static NotificationImportance Importance { get; set; } = NotificationImportance.Default;
         public static int Priority { get; set; } = NotificationCompat.PriorityDefault;
-        public static long[] Vibrate { get; set; } = new long[0]; 
+        public static long[] Vibrate { get; set; } = new long[0];
+        public static NotificationVisibility Visibility { get; set; } = NotificationVisibility.Public;
 
         /// <summary>
         /// Show a local notification
@@ -41,7 +42,7 @@ namespace Plugin.LocalNotifications
             builder.SetAutoCancel(true);
             builder.SetPriority(Priority);
             builder.SetVibrate(Vibrate);
-
+            builder.SetVisibility(Visibility);
 
             if (NotificationIconId != 0)
             {
