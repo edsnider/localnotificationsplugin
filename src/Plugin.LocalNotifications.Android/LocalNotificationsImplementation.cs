@@ -34,6 +34,7 @@ namespace Plugin.LocalNotifications
             builder.SetContentTitle(title);
             builder.SetContentText(body);
             builder.SetAutoCancel(true);
+            builder.SetStyle(new NotificationCompat.BigTextStyle().BigText(body));
 
             if (NotificationIconId != 0)
             {
