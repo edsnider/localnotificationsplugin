@@ -1,5 +1,5 @@
 environment:
-  next_version: 3.0.1
+  next_version: 3.0.2
   is_pr: false
 
 only_commits:
