@@ -23,6 +23,11 @@ namespace Plugin.LocalNotifications
         public static int NotificationIconId { get; set; }
 
         /// <summary>
+        /// The key used to Intent's Extra.
+        /// </summary>
+        public const string LocalNotificationIntentKey = "NotificationId";
+
+        /// <summary>
         /// Show a local notification
         /// </summary>
         /// <param name="title">Title of the notification</param>
@@ -56,6 +61,7 @@ namespace Plugin.LocalNotifications
 
             var resultIntent = GetLauncherActivity();
             resultIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+            resultIntent.PutExtra(LocalNotificationIntentKey, id);
             var stackBuilder = Android.Support.V4.App.TaskStackBuilder.Create(Application.Context);
             stackBuilder.AddNextIntent(resultIntent);
             var resultPendingIntent =
