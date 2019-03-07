@@ -199,7 +199,14 @@ namespace Plugin.LocalNotifications
 
         private bool CheckBootPermission()
         {
-            return Application.Context.CheckSelfPermission("android.permission.RECEIVE_BOOT_COMPLETED") == Android.Content.PM.Permission.Granted;
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
+            {
+                return Application.Context.CheckSelfPermission("android.permission.RECEIVE_BOOT_COMPLETED") == Android.Content.PM.Permission.Granted;
+            }
+            else
+            {
+                return Android.Support.V4.Content.PermissionChecker.CheckSelfPermission(Application.Context, "android.permission.RECEIVE_BOOT_COMPLETED") == Android.Support.V4.Content.PermissionChecker.PermissionGranted;
+            }
         }
 
         private string SerializeNotification(LocalNotification notification)
