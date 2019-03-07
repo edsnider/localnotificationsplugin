@@ -30,11 +30,12 @@ namespace Plugin.LocalNotifications
         /// <param name="id">Id of the notification</param>
         public void Show(string title, string body, int id = 0)
         {
-            var builder = new Notification.Builder(Application.Context);
-            builder.SetContentTitle(title);
-            builder.SetContentText(body);
-            builder.SetAutoCancel(true);
-
+            var builder = new NotificationCompat.Builder(Application.Context)
+                               .SetContentTitle(title)
+                                .SetContentText(body)
+                               .SetSound(RingtoneManager.GetDefaultUri(RingtoneType.Alarm))
+                               .SetStyle(new NotificationCompat.BigTextStyle().BigText(body));
+                               
             if (NotificationIconId != 0)
             {
                 builder.SetSmallIcon(NotificationIconId);
