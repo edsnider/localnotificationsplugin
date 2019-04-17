@@ -22,10 +22,10 @@ namespace Plugin.LocalNotifications
         public override bool OnStartJob(JobParameters jobParams)
         {
             var extra = jobParams.Extras.GetString(ScheduledAlarmHandler.LocalNotificationKey);
-            var NotificationIconId = jobParams.Extras.GetInt(LocalNotificationIconId);
+            var notificationIconId = jobParams.Extras.GetInt(LocalNotificationIconId);
             var notification = DeserializeNotification(extra);
 
-            LocalNotificationsImplementation.NotificationIconId = NotificationIconId;
+            LocalNotificationsImplementation.NotificationIconId = notificationIconId;
             CrossLocalNotifications.Current.Show(notification.Title, notification.Body, notification.Id);
             return true;
         }
