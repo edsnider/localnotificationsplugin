@@ -1,10 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27906.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.LocalNotifications.Abstractions", "Plugin.LocalNotifications.Abstractions\Plugin.LocalNotifications.Abstractions.csproj", "{57564CE6-C079-47C5-9272-4395A0224C3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.LocalNotifications.Abstractions", "Plugin.LocalNotifications.Abstractions\Plugin.LocalNotifications.Abstractions.csproj", "{57564CE6-C079-47C5-9272-4395A0224C3D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.LocalNotifications", "Plugin.LocalNotifications\Plugin.LocalNotifications.csproj", "{0B4E7C6B-EFB6-480B-88C9-B8680DB6B5CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.LocalNotifications", "Plugin.LocalNotifications\Plugin.LocalNotifications.csproj", "{0B4E7C6B-EFB6-480B-88C9-B8680DB6B5CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.LocalNotifications.Android", "Plugin.LocalNotifications.Android\Plugin.LocalNotifications.Android.csproj", "{D446C57C-1E30-4AE2-ADA2-083DC4D0341A}"
 EndProject
