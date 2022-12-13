@@ -59,7 +59,7 @@ namespace Plugin.LocalNotifications
             var stackBuilder = Android.Support.V4.App.TaskStackBuilder.Create(Application.Context);
             stackBuilder.AddNextIntent(resultIntent);
             var resultPendingIntent =
-                stackBuilder.GetPendingIntent(0, (int)PendingIntentFlags.UpdateCurrent);
+                stackBuilder.GetPendingIntent(0, (int)PendingIntentFlags.UpdateCurrent | (int)PendingIntentFlags.Immutable);
             builder.SetContentIntent(resultPendingIntent);
 
             _manager.Notify(id, builder.Build());
